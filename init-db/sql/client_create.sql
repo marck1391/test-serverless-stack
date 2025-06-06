@@ -7,7 +7,6 @@ CREATE PROCEDURE create_client (
     IN in_address VARCHAR(255)
 )
 BEGIN
-import { z } from 'zod';
     -- Validate that name is not empty
     IF LENGTH(TRIM(in_name)) = 0 THEN
         SIGNAL SQLSTATE '45000'

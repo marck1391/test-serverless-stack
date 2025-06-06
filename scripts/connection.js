@@ -67,7 +67,7 @@ async function deleteTablesAndProcedures() {
 }
 
 async function resetDatabase() {
-  const sqlDir = path.join(__dirname, "../sql")
+  const sqlDir = path.join(__dirname, "../init-db/sql")
 
   // Dynamically read all SQL files in the directory
   const sqlFiles = fs

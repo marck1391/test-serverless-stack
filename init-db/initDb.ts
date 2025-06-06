@@ -3,7 +3,7 @@ import path from 'path';
 import { executeScript } from './utils';
 
 export default async function initDb() {
-    const sqlDir = path.join(__dirname);
+    const sqlDir = path.join(__dirname, 'sql');
     // Dynamically read all SQL files in the directory
     const sqlFiles = fs.readdirSync(sqlDir).filter((file) => file.endsWith('.sql'));
 
