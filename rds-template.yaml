@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to create a public RDS instance with MariaDB (open to the internet, not recommended for production).
+
+Parameters:
+  VpcId:
+    Type: String
+    Description: Database username
+  DbUser:
+    Type: String
+    Description: Database username
+  DbPassword:
+    Type: String
+    Description: Database password
+  DbName:
+    Type: String
+    Description: Database name
+    
+Resources:
+  RDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for RDS instance
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceClass: db.t3.micro
+      AllocatedStorage: 20
+      Engine: mariadb
+      EngineVersion: "10.5"
+      MasterUsername: !Ref DbUser
+      MasterUserPassword: !Ref DbPassword
+      DBName: !Ref DbName
+      PubliclyAccessible: true
+      VPCSecurityGroups:
+        - !Ref RDSSecurityGroup
+      BackupRetentionPeriod: 7
+      MultiAZ: false
+
+Outputs:
+  RDSInstanceEndpoint:
+    Description: The endpoint of the RDS instance
+    Value: !GetAtt RDSInstance.Endpoint.Address
+    Export:
+      Name: RDSInstanceEndpoint
+
+  RDSInstancePort:
+    Description: The port of the RDS instance
+    Value: !GetAtt RDSInstance.Endpoint.Port
+    Export:
+      Name: RDSInstancePort

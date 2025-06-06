@@ -1,0 +1,9 @@
+{
+  "resource": "/clients",
+  "path": "/clients",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{ \"name\": \"John Does\", \"rfc\": \"JDEE123445734\", \"email\": \"john.newmailss2@example.com\", \"password\": \"securepassword123\" }"
+}

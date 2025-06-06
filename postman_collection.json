@@ -1,0 +1,154 @@
+{
+  "info": {
+    "name": "API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Client",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/clients",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["clients"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"rfc\": \"RFC123456\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePassword123\",\n  \"phone\": \"1234567890\",\n  \"address\": \"123 Main St\"\n}"
+        }
+      }
+    },
+    {
+      "name": "List Clients",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/clients?page=1&pageSize=10&filters[name]=John",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["clients"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "10" },
+            { "key": "filters[name]", "value": "John" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Client",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/clients/1",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["clients", "1"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"phone\": \"9876543210\",\n  \"address\": \"456 Elm St\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Delete Client",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/clients/1",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["clients", "1"]
+        }
+      }
+    },
+    {
+      "name": "Create Asset",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/assets",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["assets"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Office Space\",\n  \"type\": \"Commercial\",\n  \"location\": \"Downtown\",\n  \"price\": 1000\n}"
+        }
+      }
+    },
+    {
+      "name": "List Assets",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/assets?page=1&pageSize=10&filters[type]=Commercial",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["assets"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "10" },
+            { "key": "filters[type]", "value": "Commercial" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Asset",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/assets/1",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["assets", "1"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Office Space\",\n  \"price\": 1200\n}"
+        }
+      }
+    },
+    {
+      "name": "Delete Asset",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/assets/1",
+          "host": ["http://localhost"],
+          "port": "3000",
+          "path": ["assets", "1"]
+        }
+      }
+    }
+  ]
+}

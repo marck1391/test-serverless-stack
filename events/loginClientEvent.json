@@ -1,0 +1,9 @@
+{
+  "resource": "/login",
+  "path": "/login",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{ \"email\": \"john.newmailss2@example.com\", \"password\": \"securepassword123\" }"
+}

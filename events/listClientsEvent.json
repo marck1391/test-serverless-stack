@@ -1,0 +1,8 @@
+{
+  "resource": "/clients",
+  "path": "/clients",
+  "httpMethod": "GET",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

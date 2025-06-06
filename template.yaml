@@ -1,0 +1,242 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  sam-app
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: sam-app-user-pool
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: false
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: sam-app-user-pool-client
+      UserPoolId: !Ref CognitoUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ADMIN_NO_SRP_AUTH
+        - USER_PASSWORD_AUTH
+
+  LeaseApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+
+  InitDbFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: init-db/
+      Handler: app.lambdaHandler
+      Runtime: nodejs22.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DB_HOST: !ImportValue RDSInstanceEndpoint
+          DB_USER: admin
+          DB_PASSWORD: adminpassword
+          DB_NAME: sam_app_db
+      Policies:
+        - AWSLambdaVPCAccessExecutionRole
+    Metadata:
+      BuildMethod: makefile
+      BuildProperties:
+        Makefile: Makefile
+        BuildCommand: build-LeaseApi
+
+  LeaseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: api/
+      Handler: src/app.handler
+      Runtime: nodejs22.x
+      MemorySize: 1024
+      Architectures:
+        - x86_64
+      Timeout: 120
+      Environment:
+        Variables:
+          DB_HOST: !ImportValue RDSInstanceEndpoint
+          DB_USER: admin
+          DB_PASSWORD: adminpassword
+          DB_NAME: sam_app_db
+          COGNITO_CLIENT_ID: !Ref CognitoUserPoolClient
+          COGNITO_POOL_ID: !Ref CognitoUserPool
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - cognito-idp:AdminCreateUser
+                - cognito-idp:AdminSetUserPassword
+                - cognito-idp:AdminGetUser
+                - cognito-idp:AdminUpdateUserAttributes
+                - cognito-idp:AdminDeleteUser
+              Resource: !GetAtt CognitoUserPool.Arn
+      Events:
+        CreateClient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /clients
+            Method: post
+        LoginClient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /login
+            Method: post
+        ListClients:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /clients
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        UpdateClient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /clients/{id}
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+        DeleteClient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /clients/{id}
+            Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
+        VerifyCode:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /verify-code
+            Method: post
+        CreateAsset:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /assets
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+        ListAssets:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /assets
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        UpdateAsset:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /assets/{id}
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+        DeleteAsset:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /assets/{id}
+            Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
+        CreateContract:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /contracts
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+        ListContracts:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /contracts
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+        UpdateContract:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /contracts/{id}
+            Method: put
+            Auth:
+              Authorizer: CognitoAuthorizer
+        CancelContract:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /contracts/{id}
+            Method: delete
+            Auth:
+              Authorizer: CognitoAuthorizer
+        AddPayment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /payments
+            Method: post
+            Auth:
+              Authorizer: CognitoAuthorizer
+        ListPayments:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LeaseApi
+            Path: /payments
+            Method: get
+            Auth:
+              Authorizer: CognitoAuthorizer
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - src/app.ts
+
+Outputs:
+  CognitoUserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref CognitoUserPool
+  CognitoUserPoolClientId:
+    Description: Cognito User Pool Client ID
+    Value: !Ref CognitoUserPoolClient
+  LeaseApiUrl:
+    Description: API Gateway endpoint URL for Clients API
+    Value: !Sub https://${LeaseApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+  LeaseFunctionArn:
+    Description: Lease Lambda Function ARN
+    Value: !GetAtt LeaseFunction.Arn
+  InitDbFunctionName:
+    Description: InitDb Function Name
+    Value: !Ref InitDbFunction

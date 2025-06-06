@@ -1,0 +1,26 @@
+{
+  "license": "MIT",
+  "name": "sam-app",
+  "version": "1.0.0",
+  "description": "AWS SAM project for RDS with MySQL",
+  "author": "Marco Cardona",
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "mysql2": "^3.14.1"
+  }
+  ,
+  "scripts": {
+    "cf-validate": "aws cloudformation validate-template --template-body file://rds-template.yaml",
+    "cf-create": "aws cloudformation create-stack --stack-name test-rds-stack --template-body file://rds-template.yaml --capabilities CAPABILITY_NAMED_IAM",
+    "cf-update": "aws cloudformation update-stack --stack-name test-rds-stack --template-body file://rds-template.yaml --capabilities CAPABILITY_NAMED_IAM",
+    "cf-describe": "aws cloudformation describe-stacks --stack-name test-rds-stack",
+    "cf-delete": "aws cloudformation delete-stack --stack-name test-rds-stack",
+    "sam-build": "sam build --use-container",
+    "sam-deploy": "sam deploy --stack-name test-sam-app --capabilities CAPABILITY_IAM",
+    "sam-sync": "sam sync --watch --use-container",
+    "start-api": "set NODE_OPTIONS=&&sam local start-api --docker-network host --warm-containers EAGER -n env.json",
+    "local-db-init": "node --env-file=.env scripts/reset-db.js",
+    "local-db-reset": "node --env-file=.env scripts/reset-db.js",
+    "local-db-test": "node --env-file=.env scripts/test-connection.js"
+  }
+}
