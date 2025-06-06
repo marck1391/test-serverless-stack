@@ -4,6 +4,7 @@ import { validateClientSchema } from '../schema/clientSchema';
 import { checkIfUserExists, createClient } from '../services/clientService';
 import { dbConn, initializeConnection } from '../services/dbClient';
 import { errorResponse, successResponse } from '../utils/response';
+import { signUpUserInCognito } from '../services/authService';
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -22,18 +23,18 @@ export const handler = async (
       throw err;
     }
 
-    // let cognitoSub: string | undefined;
-    // try {
-    //   cognitoSub = await signUpUserInCognito(data.email, data.password, data.name);
-    // } catch (err: any) {
-    //   return errorResponse(err.code, 400);
-    // }
+    let cognitoSub: string | undefined;
+    try {
+      cognitoSub = await signUpUserInCognito(data.email, data.password, data.name);
+    } catch (err: any) {
+      return errorResponse(err.code, 400);
+    }
 
     const clientId = await createClient(dbConn, {
       name: data.name,
       rfc: data.rfc,
       email: data.email,
-      cognitoSub: Date.now().toString(),
+      cognitoSub,
       phone: data.phone,
       address: data.address
     });
