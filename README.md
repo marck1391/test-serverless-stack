@@ -139,37 +139,37 @@ The following commands are available in the `package.json` file:
 
 2. **Start local environment:**
    ```bash
-   yarn start-api
+   npm run start-api
    ```
    Starts the local environment using AWS SAM.
 
 3. **Package the application:**
    ```bash
-   yarn sam-build
+   npm run sam-build
    ```
    Builds the application for deployment.
 
 4. **Deploy the application:**
    ```bash
-   yarn sam-deploy
+   npm run sam-deploy
    ```
    Deploys the application to AWS.
 
 5. **Reset the database:**
    ```bash
-   yarn reset-db
+   npm run reset-db
    ```
    Resets the database to its initial state.
 
 6. **Initialize the local database:**
    ```bash
-   yarn local-db-init
+   npm run local-db-init
    ```
    Runs the database initialization script to set up tables and procedures.
 
 7. **Test the local database connection:**
    ```bash
-   yarn local-db-test
+   npm run local-db-test
    ```
    Tests the connection to the local database to ensure it is working correctly.
 
@@ -177,27 +177,27 @@ The following commands are available in the `package.json` file:
    These commands are used to manage the AWS RDS database setup:
    - **Validate template:**
      ```bash
-     yarn cf-validate
+     npm run cf-validate
      ```
      Validates the CloudFormation template for the AWS RDS database.
    - **Create stack:**
      ```bash
-     yarn cf-create
+     npm run cf-create
      ```
      Creates a new CloudFormation stack to provision the AWS RDS database.
    - **Update stack:**
      ```bash
-     yarn cf-update
+     npm run cf-update
      ```
      Updates an existing CloudFormation stack for the AWS RDS database.
    - **Describe stack:**
      ```bash
-     yarn cf-describe
+     npm run cf-describe
      ```
      Describes the details of the CloudFormation stack for the AWS RDS database.
    - **Delete stack:**
      ```bash
-     yarn cf-delete
+     npm run cf-delete
      ```
      Deletes the CloudFormation stack and associated AWS RDS database.
 
