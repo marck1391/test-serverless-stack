@@ -47,7 +47,7 @@ This project leverages the following AWS services:
 ### Environment Setup
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/marck1391/test-serverless-stack
    cd sam-app
    ```
 2. Create a `.env` file in the root directory with the following variables:
